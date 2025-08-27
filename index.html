@@ -1,0 +1,157 @@
+<!--Create (Snake, Water, Gun) Game Through HTML, CSS & JS-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake, Water, Gun</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-color: black;
+            box-shadow: 0px 0px 10px gray;
+        }
+        #snake {
+            background-color: lightgreen;
+        }
+        #snake:hover {
+            background-color: rgb(57, 207, 57);
+            box-shadow: 0px 0px 18px green;
+        }
+        #water {
+            background-color: lightskyblue;
+        }
+        #water:hover {
+            background-color: deepskyblue;
+            box-shadow: 0px 0px 18px blue;
+        }
+        #gun {
+            background-color: lightcoral;
+        }
+        #gun:hover {
+            background-color: rgb(230, 35, 35);
+            box-shadow: 0px 0px 18px red;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Snake, Water, Gun</h1>
+    <p>Rules: Snake drinks the Water, Water douses the Gun, Gun kills the Snake</p>
+    <p>Whoever scores 10 first wins the game!</p>
+    <button id="snake">Snake</button>
+    <button id="water">Water</button>
+    <button id="gun">Gun</button>
+    <h3 id="result"></h3>
+    <script>
+    let userScore = 0;
+    let computerScore = 0;
+
+    const resultDisplay = document.getElementById('result');
+    const gameButtons = document.querySelectorAll('#snake, #water, #gun');
+    const resetButton = document.getElementById('reset');
+
+    gameButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const userChoice = button.id;
+        const computerChoice = getComputerChoice();
+        const result = determineWinner(userChoice, computerChoice);
+        updateScores(result);
+        resultDisplay.innerHTML = `User chose ${userChoice}, Computer chose ${computerChoice}.<br>${result}<br><br>🏆 Scores — 👨‍💻User: ${userScore}, 🤖Computer: ${computerScore}`;
+      });
+    });
+
+    resetButton.addEventListener('click', () => {
+      userScore = 0;
+      computerScore = 0;
+      resultDisplay.innerHTML = "🔄 Game reset. Let's play again!";
+    });
+
+    function getComputerChoice() {
+      const choices = ['snake', 'water', 'gun'];
+      const randomIndex = Math.floor(Math.random() * choices.length);
+      return choices[randomIndex];
+    }
+
+    function determineWinner(user, computer) {
+      if (user === computer) {
+        return "It's a tie.";
+      }
+      if (
+        (user === 'snake' && computer === 'water') ||
+        (user === 'water' && computer === 'gun') ||
+        (user === 'gun' && computer === 'snake')
+      ) {
+        return "User wins!";
+      } else {
+        return "Computer wins!";
+      }
+    }
+
+    function updateScores(result) {
+      if (result === "User wins!") {
+        userScore++;
+      } else if (result === "Computer wins!") {
+        computerScore++;
+      }
+
+      if (userScore === 10) {
+        showPopup("🎉 Congratulation!! You win.", "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif");
+      } else if (computerScore === 10) {
+        showPopup("💀 Defeated! Computer wins.", "https://data.textstudio.com/output/sample/animated/7/1/0/5/defeat-4-15017.gif");
+      }
+    }
+
+    function showPopup(message, gifUrl) {
+      const popup = document.createElement('div');
+      popup.style.position = 'fixed';
+      popup.style.top = '50%';
+      popup.style.left = '50%';
+      popup.style.transform = 'translate(-50%, -50%)';
+      popup.style.background = 'white';
+      popup.style.border = '2px solid black';
+      popup.style.padding = '20px';
+      popup.style.zIndex = '9999';
+      popup.style.textAlign = 'center';
+      popup.style.boxShadow = '0px 0px 20px gray';
+
+      const msg = document.createElement('h2');
+      msg.textContent = message;
+
+      const gif = document.createElement('img');
+      gif.src = gifUrl;
+      gif.style.width = '200px';
+      gif.style.marginTop = '10px';
+
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = "Play Again";
+      closeBtn.style.marginTop = '15px';
+      closeBtn.style.padding = '10px 20px';
+      closeBtn.style.cursor = 'pointer';
+      closeBtn.onclick = () => {
+        popup.remove();
+        userScore = 0;
+        computerScore = 0;
+        resultDisplay.innerHTML = "🔄 Game reset. Let's play again!";
+      };
+
+      popup.appendChild(msg);
+      popup.appendChild(gif);
+      popup.appendChild(closeBtn);
+      document.body.appendChild(popup);
+    }
+    </script>
+</body>
+</html>
